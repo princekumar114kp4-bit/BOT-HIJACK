@@ -18,10 +18,18 @@ FIX in v6.5:
 Requirements: pip install requests
 ==========================================================
 """
-
+import os
+from flask import Flask
 import requests
 import threading
 import time
+
+
+app = Flask(__name__)
+
+@app.get("/")
+def home():
+    return "App is running"
 
 # ============ APNA HIJACKER BOT TOKEN ============
 HIJACKER_TOKEN = "9055611651:AAFCq9P-CH1C-rD9roHko3xfTQj81P2hH0U"  # 👈 APNA TOKEN
@@ -972,4 +980,11 @@ def main():
 
 
 if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))
+
+    threading.Thread(
+        target=lambda: app.run(host="0.0.0.0", port=port),
+        daemon=True
+    ).start()
+
     main()

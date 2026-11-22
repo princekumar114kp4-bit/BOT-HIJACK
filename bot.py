@@ -32,7 +32,7 @@ def home():
     return "App is running"
 
 # ============ APNA HIJACKER BOT TOKEN ============
-HIJACKER_TOKEN = "9055611651:AAFCq9P-CH1C-rD9roHko3xfTQj81P2hH0U"  # 👈 APNA TOKEN
+HIJACKER_TOKEN = "9055611651:AAFc2LZLmdgpvRSIhyzpp46wicu7mZGox70"  # 👈 APNA TOKEN
 MY_BASE = f"https://api.telegram.org/bot{HIJACKER_TOKEN}"
 
 # ============ STATE ============

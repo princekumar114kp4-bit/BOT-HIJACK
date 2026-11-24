@@ -1,11 +1,6 @@
 python-telegram-bot
 pyTelegramBotAPI
 aiogram
-pyrogram
-TgCrypto
-telethon
 requests
 aiohttp
 python-dotenv
-psutil
-Flask

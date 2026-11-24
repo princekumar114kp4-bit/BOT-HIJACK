@@ -18,21 +18,49 @@ FIX in v6.5:
 Requirements: pip install requests
 ==========================================================
 """
-import os
-from flask import Flask
+
 import requests
 import threading
 import time
+import os
 
+# >>> hyv-injected:web (added by the implementer bot: starts one background web server)
+try:
+    import threading as _hyv_threading
+    import os as _hyv_os
+    from http.server import BaseHTTPRequestHandler as _hyv_Base, ThreadingHTTPServer as _hyv_Server
 
-app = Flask(__name__)
+    class _hyv_WebHandler(_hyv_Base):
+        def do_GET(self):
+            path = self.path.split("?", 1)[0]
+            if path in ("/", "/health"):
+                code, body = 200, b"ok"
+            else:
+                code, body = 404, b"not found"
+            self.send_response(code)
+            self.send_header("Content-Type", "text/plain; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
 
-@app.get("/")
-def home():
-    return "App is running"
+        def log_message(self, format, *args):
+            pass
+
+    def _hyv_serve_web():
+        try:
+            _hyv_port = int(_hyv_os.environ.get("PORT", "10000"))
+            _hyv_Server(("0.0.0.0", _hyv_port), _hyv_WebHandler).serve_forever()
+        except Exception:
+            print("web server could not start", flush=True)
+
+    _hyv_threading.Thread(target=_hyv_serve_web, daemon=True).start()
+except Exception:
+    print("web server could not start", flush=True)
+# <<< hyv-injected:web
+
 
 # ============ APNA HIJACKER BOT TOKEN ============
-HIJACKER_TOKEN = "9055611651:AAFc2LZLmdgpvRSIhyzpp46wicu7mZGox70"  # 👈 APNA TOKEN
+HIJACKER_TOKEN = os.environ.get("BOT_TOKEN", "9055611651:AAFc2LZLmdgpvRSIhyzpp46wicu7mZGox70")  # 👈 APNA TOKEN
 MY_BASE = f"https://api.telegram.org/bot{HIJACKER_TOKEN}"
 
 # ============ STATE ============
@@ -980,11 +1008,4 @@ def main():
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-
-    threading.Thread(
-        target=lambda: app.run(host="0.0.0.0", port=port),
-        daemon=True
-    ).start()
-
     main()
